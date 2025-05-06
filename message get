@@ -1,0 +1,26 @@
+#include<stdio.h>
+#include<unistd.h>
+#include<string.h>
+#include<fcntl.h>
+#include<sys/msg.h>
+struct msg{
+	long mtype;
+	char mword[20];
+};
+int main(){
+	struct msg v;
+	int id,re;
+	id=msgget(5,IPC_CREAT|0644);
+	if(id<0){
+		perror("Msgget");
+		return 1;
+	}
+	re=msgrcv(id,&v,sizeof(v.mword),0,0);
+	if(re==-1){
+		perror("Msgsnd");
+		return 1;
+	}
+	printf("Type: %d\n",v.mtype);
+	printf("Msg: %s\n",v.mword);
+	return 0;
+}
